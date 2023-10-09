@@ -1,0 +1,25 @@
+all: main
+
+main: main.o lib/libstat.a lib/libprint.a
+	gcc -o main main.o -L./lib/ -lstat -lprint
+
+lib:
+	mkdir -p lib
+
+lib/libstat.a: stat.o lib
+	ar rs lib/libstat.a stat.o
+
+lib/libprint.a: print_vector.o lib
+	ar rs lib/libprint.a print_vector.o
+
+main.o: main.c stat.h print_vector.h
+	gcc -c main.c
+
+stat.o: stat.c stat.h
+	gcc -c stat.c
+
+print_vector.o: print_vector.c print_vector.h
+	gcc -c print_vector.c
+
+clean:
+	rm *.o

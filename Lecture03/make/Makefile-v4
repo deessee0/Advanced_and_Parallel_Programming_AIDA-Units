@@ -1,0 +1,30 @@
+CC = gcc
+CFLAGS = -O3
+LIB = lib
+
+all: main
+
+main: main.o ${LIB}/libstat.a ${LIB}/libprint.a
+	${CC} ${CFLAGS} -o main main.o -L./${LIB}/ -lstat -lprint
+
+${LIB}:
+	mkdir -p ${LIB}
+
+${LIB}/libstat.a: stat.o ${LIB}
+	ar rs ${LIB}/libstat.a stat.o
+
+${LIB}/libprint.a: print_vector.o ${LIB}
+	ar rs ${LIB}/libprint.a print_vector.o
+
+main.o: main.c stat.h print_vector.h
+	${CC} ${CFLAGS} -c main.c
+
+stat.o: stat.c stat.h
+	${CC} ${CFLAGS} -c stat.c
+
+print_vector.o: print_vector.c print_vector.h
+	${CC} ${CFLAGS} -c print_vector.c
+
+.PHONY: clean
+clean:
+	rm *.o

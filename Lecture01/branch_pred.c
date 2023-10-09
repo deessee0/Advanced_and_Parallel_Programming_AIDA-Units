@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
   srand(time(NULL));
   int * v1 = random_vector(SIZE);
   int * v2 = random_vector(SIZE);
-  int tmp;
+  int tmp, tmp0;
   
   clock_t start = clock();
   tmp = sum_small_values(v1, SIZE);

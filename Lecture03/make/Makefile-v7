@@ -1,4 +1,5 @@
 CC = gcc
+
 ifeq "${DEBUG}" "yes"
 	CFLAGS = -g -Wall -std=c17
 else

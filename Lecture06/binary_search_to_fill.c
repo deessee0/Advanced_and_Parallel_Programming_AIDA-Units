@@ -22,7 +22,19 @@ int binary_search(int * v, int len, int key) {
 }
 
 int binary_search_branchless(int * v, int len, int key) {
-  return -1;
+  int l = 0;
+  int r = len;
+  while (l < r){ // log_2(n) iterazione
+    int m = (l+r)/2;
+    int q = v[m] >= key;
+    r = q*m + (1-q)*r;
+    l = q*l+ (1-q)*(m+1);
+  }
+  if (v[l] == key){
+    return l;
+  } else {
+    return -1;
+  }
 }
 
 
@@ -68,6 +80,8 @@ int main(int argc, char * argv[])
     float t;
     printf("%d\t", i);
     t = test_search(binary_search, 1<<i, search_size);
+    printf("%f\t",t);
+    t = test_search(binary_search_branchless, 1 << i, search_size);
     printf("%f\n", t);
   }
   return 0;

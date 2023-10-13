@@ -3,11 +3,18 @@ CFLAGS = -O3
 LIB = lib
 CHEADERS = ${wildcard *.h}
 PROGNAME = main
+SHARED = no
 
 ifeq "${DEBUG}" "yes"
 	CFLAGS = -g -Wall -std=c17
 else
 	CFLAGS = -O3 -Wall -std=c17
+endif
+
+ifeq "${SHARED}" "yes"
+	
+else
+	
 endif
 
 all: ${PROGNAME}

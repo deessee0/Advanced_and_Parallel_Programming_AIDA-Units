@@ -18,7 +18,25 @@ int * random_vector(int len)
 }
 
 int binary_search(int * v, int len, int key) {
-  return -1;
+  int l = 0;
+  int r = len;
+  while (l < r)
+  { // log_2(n) iterazione
+    int m = (l + r) / 2;
+    if(v[m] >= key){
+      r = m;
+    } else {
+      l = m+1;
+    }
+  }
+  if (v[l] == key)
+  {
+    return l;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 int binary_search_branchless(int * v, int len, int key) {

@@ -116,14 +116,16 @@ int main(int argc, char * argv[])
   
   printf("\tw/ branches\tbranchless\tb.less pref.\n");
   for (int i = exp_min; i <= exp_max; i++) {
-    float t;
+    float a;
+    float b;
+    float c;
     printf("%d\t", i);
-    t = test_search(binary_search, 1<<i, search_size);
-    printf("%f\t",t);
-    t = test_search(binary_search_branchless, 1 << i, search_size);
-    printf("%f\t", t);
-    t = test_search(binary_search_branchless_prefetch, 1 << i, search_size);
-    printf("%f\t", t);
+    a = test_search(binary_search, 1<<i, search_size);
+    printf("%f\t",a);
+    b = test_search(binary_search_branchless, 1 << i, search_size);
+    printf("%f\t", b);
+    c = test_search(binary_search_branchless_prefetch, 1 << i, search_size);
+    printf("%f\t", c);
   }
   return 0;
 }

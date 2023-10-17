@@ -1,5 +1,6 @@
 #ifndef _NODE_H
 #define _NODE_H
+#include <stdlib.h>
 
 
 typedef struct _tree_node *t_node;

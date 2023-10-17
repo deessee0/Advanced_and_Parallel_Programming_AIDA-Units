@@ -1,5 +1,6 @@
 #include "node.h"
 #include <errno.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 t_node make_t_node(void)

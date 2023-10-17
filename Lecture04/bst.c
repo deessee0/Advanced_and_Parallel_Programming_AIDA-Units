@@ -1,6 +1,7 @@
 #include "bst.h"
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "node.h"
 
 typedef struct _tree_node *t_node;

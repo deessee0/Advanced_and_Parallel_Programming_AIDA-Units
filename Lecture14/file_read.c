@@ -12,6 +12,7 @@ void read_with_fscanf()
     printf("%d\n", x);
   }
   fclose(fp);
+  return;
 }
 
 void read_with_getc()
@@ -26,6 +27,7 @@ void read_with_getc()
     putc(c, stdout);
   }
   fclose(fp);
+  return;
 }
 
 int main(int argc, char * argv[])

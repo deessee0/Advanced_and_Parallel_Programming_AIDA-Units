@@ -1,7 +1,7 @@
 from ctypes import *
 
 
-code = cdll.LoadLibrary("libmatrix.so")
+code = cdll.LoadLibrary("./libmatrix.so")
 
 code.make_random_matrix.argtypes = [c_int]
 code.make_random_matrix.restype = POINTER(c_float)
@@ -17,7 +17,7 @@ C = code.make_zero_matrix(n)
 
 code.omp_blocked_multiply(A, B, C, n)
 
-# for i in range(n):
-#     for j in range(n):
-#         print(f"{C[i * n + j]} ")
-#     print("\n")
+for i in range(n):
+    for j in range(n):
+        print(f"{C[i * n + j]} ")
+    print("\n")

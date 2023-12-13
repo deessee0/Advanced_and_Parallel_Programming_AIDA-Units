@@ -28,3 +28,4 @@ q.enqueue(3)
 
 print(q._Queue__data)
 q._Queue__do_stuff()
+print(q._Queue__data)

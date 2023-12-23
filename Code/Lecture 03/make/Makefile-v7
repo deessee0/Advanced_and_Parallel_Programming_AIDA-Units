@@ -1,0 +1,34 @@
+CC = gcc
+CFLAGS = -O3 -Wall -pedantic -std=c18
+LIB = lib
+CHEADERS = ${wildcard *.h}
+PROGNAME = main
+
+all: ${PROGNAME}
+
+${PROGNAME}: main.o ${LIB}/libstat.a ${LIB}/libprint.a
+	@${CC} ${CFLAGS} -o $@ $< -L./${LIB}/ -lstat -lprint
+
+${LIB}:
+	@mkdir -p $@
+
+${LIB}/libprint.a: print_vector.o ${LIB}
+	@ar rs $@ $<
+
+${LIB}/libstat.a: stat.o ${LIB}
+	@ar rs $@ $<
+
+main.o: main.c ${CHEADERS}
+	@${CC} ${CFLAGS} -c $<
+
+%.o: %.c %.h
+	@${CC} ${CFLAGS} -c $<
+
+
+.PHONY: clean clean-all
+clean:
+	rm -f *.o
+
+clean-all: clean
+	rm -rf ${LIB}
+	rm -f ${PROGNAME}

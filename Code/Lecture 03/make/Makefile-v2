@@ -1,0 +1,16 @@
+all: main
+
+main: main.o stat.o print_vector.o
+	gcc -o main main.o stat.o print_vector.o
+
+main.o: main.c stat.h print_vector.h
+	gcc -c main.c
+
+stat.o: stat.c stat.h
+	gcc -c stat.c
+
+print_vector.o: print_vector.c print_vector.h
+	gcc -c print_vector.c
+
+clean:
+	rm *.o

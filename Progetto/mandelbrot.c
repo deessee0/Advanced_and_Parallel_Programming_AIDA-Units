@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <complex.h>
 
-void isMandelbrot(double complex n, float r = 2, int M)
+int isMandelbrot(float complex c, float r, int M)
 {
-    const double complex c = 0.0 + 0.0 * I;
-    
+    float complex Zn = 0;
 
-    for(int i=0; i<M,i++){
-        Zn = 
+    for(int i=0; i<M; i++){
         
-        if (n > 0)
-        {
-            double complex zn = (zn * zn) + z0;
+        Zn = (Zn * Zn) + c;
+
+        if (cabsf(Zn) >= r){
+
+            return i;
         }
     }
+
+    return -1;
 }

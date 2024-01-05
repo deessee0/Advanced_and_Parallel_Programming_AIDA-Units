@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     int ncols = 1.5 * nrows;
     float r = 2.0;
 
-    create_image(path, nrows, ncols);
+    create_image(path, nrows, ncols, maxIter, r);
 
     return 0;
 }

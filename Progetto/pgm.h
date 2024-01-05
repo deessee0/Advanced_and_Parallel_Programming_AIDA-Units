@@ -3,7 +3,7 @@
 
 #include <complex.h>
 
-void create_image(char *path, int nrows, int ncols);
+void create_image(const char *path, int nrows, int ncols, int maxIter, int r);
 
 #endif
 

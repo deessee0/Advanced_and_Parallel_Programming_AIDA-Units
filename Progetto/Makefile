@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -fopenmp
+CFLAGS = -Wall -Wextra -std=c99 -fopenmp -lm -O3
 OBJ = main.o mandelbrot.o pgm.o
 
 mandelbrot: $(OBJ)
-	$(CC) -o mandelbrot $(OBJ)
+	$(CC) -o mandelbrot $(OBJ) -lm -fopenmp
 
 main.o: main.c mandelbrot.h pgm.h
 	$(CC) -c main.c $(CFLAGS)

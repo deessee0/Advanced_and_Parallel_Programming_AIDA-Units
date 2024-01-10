@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -fopenmp -lm -O3
+CFLAGS = -Wall -Wextra -std=c17 -fopenmp -lm -O3
 OBJ = main.o mandelbrot.o pgm.o
 
 mandelbrot: $(OBJ)

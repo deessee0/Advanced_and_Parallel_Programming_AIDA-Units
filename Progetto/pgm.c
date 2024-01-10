@@ -8,15 +8,6 @@
 #include <fcntl.h>
 #include <string.h>
 
-void chiudiImmagine(FILE *sile, int ncols, int nrows, int *map)
-{
-
-    munmap(map, nrows * ncols * sizeof(int));
-    fseek(sile, 0, SEEK_SET);
-    fprintf(sile, "P5\n%d %d\n255\n", ncols, nrows);
-    fclose(sile);
-}
-
 void create_image(const char *path, int nrows, int ncols, int maxIter)
 {
     FILE *sile = fopen(path, "w+");
@@ -30,14 +21,16 @@ void create_image(const char *path, int nrows, int ncols, int maxIter)
 
     // Calcola la dimensione dell'immagine
     int img_size = nrows * ncols;
-    if (ftruncate(fd, img_size * sizeof(int)) == -1)
+    int offset = fprintf(sile, "P5\n%d %d\n255\n", ncols, nrows);
+
+    if (ftruncate(fd, offset + img_size * sizeof(char)) == -1)
     {
         perror("Errore in ftruncate");
         // Gestisci l'errore come necessario
     }
 
     // Mappa il file in memoria
-    int *map = (int *)mmap(0, img_size *sizeof(int), PROT_WRITE, MAP_SHARED, fd, 0);
+    char *map = (char *)mmap(0, offset + img_size * sizeof(char), PROT_WRITE, MAP_SHARED, fd, 0);
 
     if (map == MAP_FAILED)
     {
@@ -46,18 +39,19 @@ void create_image(const char *path, int nrows, int ncols, int maxIter)
         exit(-1);
     }
 
+  
 #pragma omp parallel for collapse(2)
     for (int row = 0; row < nrows; row++)
     {
         for (int col = 0; col < ncols; col++)
         {
-            float re = -2.0 + col * 3.0 / ncols;
-            float im = -1.0 + row * 2.0 / nrows;
+            float re = -2.0 + col * 3.0 / (ncols-1);
+            float im = -1.0 + row * 2.0 / (nrows-1);
             float complex c = re + im * I;
 
             int n = isMandelbrot(c, maxIter);
 
-            int color;
+            char color;
 
             if (n == -1)
             {
@@ -65,12 +59,13 @@ void create_image(const char *path, int nrows, int ncols, int maxIter)
             }
             else
             {
-                color = (int)(255 * log(n) / log(maxIter)); // Scala di grigi per altri punti
+                color = (char)(255 * log(n) / log(maxIter)); // Scala di grigi per altri punti
             }
-
-            map[row * ncols + col] = color;
+            
+            map[(row * ncols) + offset + col] = color;
         }
     }
 
-    chiudiImmagine(sile, ncols, nrows, map);
+    munmap(map, offset + nrows * ncols * sizeof(char));
+    fclose(sile);
 }

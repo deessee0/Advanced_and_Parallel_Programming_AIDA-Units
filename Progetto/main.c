@@ -17,9 +17,8 @@ int main(int argc, char *argv[])
     int maxIter = atoi(argv[2]);
     int nrows = atoi(argv[3]);
     int ncols = 1.5 * nrows;
-    float r = 2.0;
 
-    create_image(path, nrows, ncols, maxIter, r);
+    create_image(path, nrows, ncols, maxIter);
 
     return 0;
 }

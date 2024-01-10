@@ -8,9 +8,19 @@
 #include <fcntl.h>
 #include <string.h>
 
-void create_image(const char *path, int nrows, int ncols, int maxIter, int r)
+void chiudiImmagine(FILE *sile, int ncols, int nrows, int *map)
 {
-    int fd = open(path, O_RDWR | O_CREAT, 0666);
+
+    munmap(map, nrows * ncols * sizeof(int));
+    fseek(sile, 0, SEEK_SET);
+    fprintf(sile, "P5\n%d %d\n255\n", ncols, nrows);
+    fclose(sile);
+}
+
+void create_image(const char *path, int nrows, int ncols, int maxIter)
+{
+    FILE *sile = fopen(path, "w+");
+    int fd = fileno(sile);
 
     if (fd == -1)
     {
@@ -18,32 +28,16 @@ void create_image(const char *path, int nrows, int ncols, int maxIter, int r)
         exit(-1);
     }
 
-    // Calcola la dimensione dell'immagine includendo l'intestazione PGM
-    size_t img_size = nrows * ncols;
-    size_t header_size = snprintf(NULL, 0, "P5\n%d %d\n255\n", ncols, nrows);
-    size_t total_size = header_size + img_size;
-
-    // Estendi la dimensione del file
-    if (ftruncate(fd, total_size) == -1)
+    // Calcola la dimensione dell'immagine
+    int img_size = nrows * ncols;
+    if (ftruncate(fd, img_size * sizeof(int)) == -1)
     {
-        perror("Errore nel ridimensionamento del file");
-        close(fd);
-        exit(-1);
-    }
-
-    // Scrivi l'intestazione nel file
-    char header[header_size + 1];
-    sprintf(header, "P5\n%d %d\n255\n", ncols, nrows);
-    // Modifica la condizione di verifica dopo la chiamata a write
-    if (write(fd, header, header_size) < 0)
-    {
-        perror("Errore nella scrittura dell'intestazione");
-        close(fd);
-        exit(-1);
+        perror("Errore in ftruncate");
+        // Gestisci l'errore come necessario
     }
 
     // Mappa il file in memoria
-    unsigned char *map = mmap(0, total_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    int *map = (int *)mmap(0, img_size *sizeof(int), PROT_WRITE, MAP_SHARED, fd, 0);
 
     if (map == MAP_FAILED)
     {
@@ -52,39 +46,31 @@ void create_image(const char *path, int nrows, int ncols, int maxIter, int r)
         exit(-1);
     }
 
-    // Calcola e scrivi i dati dell'immagine nel buffer mappato
-    unsigned char *img_data = map + header_size;
 #pragma omp parallel for collapse(2)
     for (int row = 0; row < nrows; row++)
     {
         for (int col = 0; col < ncols; col++)
         {
-            float re = -2 + (col * 3.0) / ncols;
-            float im = -1 + (row * 2.0) / nrows;
+            float re = -2.0 + col * 3.0 / ncols;
+            float im = -1.0 + row * 2.0 / nrows;
             float complex c = re + im * I;
 
-            int n = isMandelbrot(c, maxIter, r);
-            unsigned char color;
+            int n = isMandelbrot(c, maxIter);
 
-            if (n == maxIter)
+            int color;
+
+            if (n == -1)
             {
-                color = 255;
+                color = 255; // Bianco per i punti all'interno dell'insieme di Mandelbrot
             }
             else
             {
-                color = (unsigned char)(255 * log(n) / log(maxIter));
+                color = (int)(255 * log(n) / log(maxIter)); // Scala di grigi per altri punti
             }
 
-            img_data[row * ncols + col] = color;
+            map[row * ncols + col] = color;
         }
     }
 
-    // Rilascia la mappatura
-    if (munmap(map, total_size) == -1)
-    {
-        perror("Errore nel rilascio di mmap");
-    }
-
-    close(fd);
+    chiudiImmagine(sile, ncols, nrows, map);
 }
-

@@ -3,6 +3,6 @@
 
 #include <complex.h>
 
-int isMandelbrot(float complex c, float r, int M);
+int isMandelbrot(float complex c, int M);
 
 #endif

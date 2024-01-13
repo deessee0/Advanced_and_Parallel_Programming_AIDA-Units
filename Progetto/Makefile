@@ -1,18 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c17 -fopenmp -lm -O3
+CFLAGS = -Wall -Wextra -std=c17 -fopenmp -O3
 OBJ = main.o mandelbrot.o pgm.o
 
+.PHONY: clean run
+
 mandelbrot: $(OBJ)
-	$(CC) -o mandelbrot $(OBJ) -lm -fopenmp
+	$(CC) -o mandelbrot $(OBJ) $(CFLAGS) -lm
 
-main.o: main.c mandelbrot.h pgm.h
-	$(CC) -c main.c $(CFLAGS)
-
-mandelbrot.o: mandelbrot.c mandelbrot.h
-	$(CC) -c mandelbrot.c $(CFLAGS)
-
-pgm.o: pgm.c pgm.h mandelbrot.h
-	$(CC) -c pgm.c $(CFLAGS)
+$(OBJ): mandelbrot.h pgm.h
 
 clean:
 	rm -f mandelbrot $(OBJ)
+
+run: mandelbrot
+	./mandelbrot default.pgm 1000 1000
